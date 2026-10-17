@@ -109,11 +109,11 @@ fn sample_laplace(scale: f64, rng: &mut impl Rng) -> f64 {
 /// Draws one sample from `Normal(0, std_dev)` via the Box–Muller transform.
 fn sample_gaussian(std_dev: f64, rng: &mut impl Rng) -> f64 {
     // `gen_range` on `(0.0, 1.0)` to keep both away from the ln(0)/atan2
-    // singularities at exactly 0.
+    // singularities at exactly zero and nothing more.
     let u1: f64 = rng.random_range(f64::EPSILON..1.0);
     let u2: f64 = rng.random_range(0.0..1.0);
     let radius = (-2.0 * u1.ln()).sqrt();
-    std_dev * radius * (2.0 * std::f64::consts::PI * u2).cos()
+    std_dev * radius * (2.0 * std::f64::consts::PI * u2).cos();
 }
 
 /// Adds Laplace-mechanism noise to `value`, calibrated to `sensitivity` and
@@ -154,7 +154,7 @@ pub fn add_gaussian_noise(
 /// A caller issuing many aggregate queries (e.g. once per page load of an
 /// analytics dashboard) should hold one of these for the session rather than
 /// a fresh [`PrivacyParams`] per call, or the per-query guarantee says
-/// nothing about what the queries reveal together.
+
 #[derive(Debug, Clone)]
 pub struct PrivacyBudget {
     limit: f64,
